@@ -1,6 +1,8 @@
-import 'dart:io';
-
 import 'package:word_collection_utils/word_collection_utils.dart';
+
+// Conditional import:
+import 'init/passphrase_generator_init_io.dart'
+    if (dart.library.html) 'passphrase_generator_init_web.dart';
 
 /// A utility class for generating secure passphrases using a word collection.
 ///
@@ -16,11 +18,14 @@ class PassphraseGenerator {
 
   /// Generates a passphrase as a single string.
   ///
+  /// Returns a string containing [wordCount] randomly selected words,
+  /// joined by [joinString].
+  ///
   /// [wordCount]: The number of words in the passphrase. Must be greater than zero.
   /// [joinString]: The string used to join the words. Defaults to a space.
   /// [collectionPath]: Optional path to a custom word collection CSV file.
   ///
-  /// Throws [ArgumentError] if [wordCount] is not positive.
+  /// Throws an [ArgumentError] if [wordCount] is not positive.
   static Future<String> generatePassphrase(
     int wordCount, {
     String joinString = ' ',
@@ -39,10 +44,12 @@ class PassphraseGenerator {
 
   /// Generates a passphrase as a list of words.
   ///
+  /// Returns a list of [wordCount] randomly selected words as strings.
+  ///
   /// [wordCount]: The number of words in the passphrase. Must be greater than zero.
   /// [collectionPath]: Optional path to a custom word collection CSV file.
   ///
-  /// Throws [ArgumentError] if [wordCount] is not positive.
+  /// Throws an [ArgumentError] if [wordCount] is not positive.
   static Future<List<String>> generatePassphraseAsList(
     int wordCount, {
     String? collectionPath,
@@ -60,21 +67,15 @@ class PassphraseGenerator {
   /// Initializes the word collection utility.
   ///
   /// [collectionPath]: Optional path to a custom word collection CSV file.
-  /// If not provided, defaults to 'lib/assets/collection.csv'.
+  /// If not provided, defaults to 'lib/assets/collection.csv' on non-web platforms.
+  /// On web, [collectionPath] must be provided.
   ///
   /// Returns `true` if initialization succeeds, otherwise `false`.
   static bool _init({String? collectionPath}) {
     try {
-      if (collectionPath != null) {
-        _wordCollectionUtils = WordCollectionUtils(
-          collectionPath: collectionPath,
-        );
-      } else {
-        collectionPath = File('lib/assets/collection.csv').absolute.path;
-        _wordCollectionUtils = WordCollectionUtils(
-          collectionPath: collectionPath,
-        );
-      }
+      _wordCollectionUtils = createWordCollectionUtils(
+        collectionPath: collectionPath,
+      );
       return true;
     } catch (e) {
       print('Error initializing PassphraseGenerator: $e');
@@ -87,7 +88,7 @@ class PassphraseGenerator {
   /// [wordCount]: The number of words to generate.
   /// [collectionPath]: Optional path to a custom word collection CSV file.
   ///
-  /// Throws [Exception] if initialization fails.
+  /// Throws an [Exception] if initialization fails.
   static Future<List<Word>> _generateWordList(
     int wordCount, {
     String? collectionPath,
