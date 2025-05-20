@@ -1,0 +1,14 @@
+name: passphrase_generator
+description: A Dart package for generating passphrases.
+version: 0.1.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  word_collection_utils: ^0.1.1
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
