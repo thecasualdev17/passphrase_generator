@@ -1,7 +1,8 @@
 import 'package:word_collection_utils/word_collection_utils.dart';
 
 // Conditional import:
-import 'init/passphrase_generator_init_io.dart'
+import 'init/passphrase_generator_init_stub.dart'
+    if (dart.library.io) 'passphrase_generator_init_io.dart'
     if (dart.library.html) 'passphrase_generator_init_web.dart';
 
 /// A utility class for generating secure passphrases using a word collection.

@@ -5,3 +5,7 @@
 ## 0.1.1
 
 - Added platform checks
+
+## 0.1.2
+
+- Added missing stub
